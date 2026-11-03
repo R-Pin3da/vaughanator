@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./app-icon.svg" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://static-1.ivoox.com; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <title>Vaughanator · iVoox</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true"><span>V</span></div>
+        <div>
+          <p class="eyebrow">PUBLICACIÓN DE AUDIOS · iVOOX</p>
+          <h1>Vaughanator</h1>
+        </div>
+        <div class="session-indicator" id="session-indicator"><span class="indicator-dot"></span><span id="session-label">Sesión sin iniciar</span></div>
+      </header>
+
+      <section class="session-card card" aria-labelledby="session-title">
+        <div class="section-heading">
+          <div class="step-number">01</div>
+          <div>
+            <p class="eyebrow">CONEXIÓN TEMPORAL</p>
+            <h2 id="session-title">Conectar con iVoox</h2>
+          </div>
+          <p class="section-note">El JWT vive solo en esta sesión y se elimina al cerrar la app.</p>
+        </div>
+        <form id="session-form" class="session-grid" autocomplete="off">
+          <section class="connection-step">
+            <label class="field connection-environment-field">
+              <span class="connection-step-heading"><span class="connection-step-number">1</span><span>Selecciona el entorno</span></span>
+              <select id="environment" name="environment" required></select>
+            </label>
+          </section>
+          <section class="connection-step">
+            <div class="connection-step-heading"><span class="connection-step-number">2</span><strong>Accede a iVoox</strong></div>
+            <div class="session-links">
+              <a class="session-link" id="login-link" href="https://www.ivoox.net/" target="_blank" rel="noopener noreferrer">Haz login con tu @ivoox</a>
+              <a class="session-link" id="zp-link" href="https://www.ivoox.net/_ra_2830059_1.html" target="_blank" rel="noopener noreferrer">Entra al entorno de ZP correspondiente</a>
+            </div>
+          </section>
+          <section class="connection-step">
+            <div class="connection-step-heading"><span class="connection-step-number">3</span><strong>Copia el token</strong></div>
+            <div class="token-command">
+              <p>Ejecuta en la consola</p>
+              <code id="token-command-text">$nuxt.$auth.getToken('local').split(' ')[1]</code>
+              <button class="button button-quiet copy-command" type="button" id="copy-token-command">Copiar comando</button>
+            </div>
+          </section>
+          <section class="connection-step">
+            <div class="connection-step-heading"><span class="connection-step-number">4</span><strong>Conecta</strong></div>
+            <label class="field jwt-field">
+              <span>Pega el token aquí</span>
+              <input id="jwt" name="jwt" type="password" placeholder="Pega el token aquí" required spellcheck="false" autocomplete="new-password" />
+            </label>
+            <button class="button button-dark session-button" type="submit" id="session-submit">Iniciar sesión <span aria-hidden="true">→</span></button>
+          </section>
+        </form>
+        <p class="inline-message" id="session-message" role="status"></p>
+      </section>
+
+      <section class="workflow-grid">
+        <section class="config-card card" aria-labelledby="batch-title">
+          <div class="section-heading compact-heading">
+            <div class="step-number">02</div>
+            <div>
+              <p class="eyebrow">CONFIGURACIÓN DEL LOTE</p>
+              <h2 id="batch-title">Calendario de publicación</h2>
+            </div>
+          </div>
+          <div class="config-fields">
+            <label class="field">
+              <span>Sábado de inicio <small>hora local</small></span>
+              <input id="start-date" type="date" required disabled />
+            </label>
+          </div>
+          <div class="schedule-rule">
+            <div class="rule-icon" aria-hidden="true">◷</div>
+            <div>
+              <strong>Publicación semanal · desde las 08:00</strong>
+              <p>Cada audio del episodio se separa 15 segundos; sus cuatro programas comparten horario. Puedes editar cada publicación en la preview.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="drop-card card" aria-labelledby="files-title">
+          <div class="section-heading compact-heading">
+            <div class="step-number">03</div>
+            <div>
+              <p class="eyebrow">SELECCIÓN DE MP3</p>
+              <h2 id="files-title">Añadir audios</h2>
+            </div>
+          </div>
+          <label class="dropzone" id="dropzone" for="file-input" tabindex="0">
+            <input id="file-input" type="file" accept="audio/mpeg,.mp3" multiple hidden />
+            <span class="upload-icon" aria-hidden="true">↑</span>
+            <span class="drop-title">Suelta los archivos aquí</span>
+            <span class="drop-subtitle">o <span class="text-link">selecciónalos desde tu equipo</span></span>
+            <span class="file-pattern">BASICO 61.mp3 · MEDIO 61.mp3 · AVANZADO 61.mp3</span>
+          </label>
+        </section>
+      </section>
+
+      <section class="preview-card card" aria-labelledby="preview-title">
+        <div class="preview-header">
+          <div class="section-heading compact-heading">
+            <div class="step-number">04</div>
+            <div>
+              <p class="eyebrow">REVISIÓN FINAL</p>
+            <h2 id="preview-title">Publicaciones del lote <span class="count-pill" id="file-count">0</span></h2>
+            </div>
+          </div>
+          <p class="preview-caption">Cada MP3 se publicará en los cuatro programas. Revisa textos e imágenes y ajusta la fecha y hora de cada publicación si hace falta.</p>
+        </div>
+
+        <div class="batch-errors" id="batch-errors" role="alert" hidden></div>
+        <div class="empty-state" id="empty-state">
+          <div class="empty-wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+          <strong>Tu lote aparecerá aquí</strong>
+          <p>Los episodios deben ser correlativos. Puedes añadir uno o varios niveles por episodio.</p>
+        </div>
+        <div class="audio-list" id="audio-list"></div>
+
+        <div class="preview-footer">
+          <div class="result-summary" id="result-summary" role="status">No hay audios seleccionados.</div>
+          <div class="footer-actions">
+            <button class="button button-quiet" type="button" id="clear-batch" disabled>Vaciar lote</button>
+            <label class="parallel-control">
+              <span>En paralelo</span>
+              <select id="parallel-limit" aria-label="Publicaciones simultáneas">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="8">8</option>
+                <option value="all">Todos</option>
+              </select>
+            </label>
+            <button class="button button-primary" type="button" id="publish" disabled>Confirmar y publicar <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="request-log card">
+        <details id="request-log-details">
+          <summary class="request-log-summary">
+            <span>Registro técnico de requests <span class="count-pill" id="request-log-count">0</span></span>
+            <small>Temporal · JWT y firmas de S3 ocultos</small>
+          </summary>
+          <div class="request-log-toolbar">
+            <span>Solo se conserva en memoria mientras la app está abierta.</span>
+            <div class="footer-actions">
+              <button class="button button-quiet" type="button" id="copy-request-log" disabled>Copiar registro</button>
+              <button class="button button-quiet" type="button" id="clear-request-log" disabled>Limpiar</button>
+            </div>
+          </div>
+          <pre class="request-log-output" id="request-log-output" role="log" aria-live="polite">Aún no hay requests registrados.</pre>
+        </details>
+      </section>
+
+      <footer class="app-footer"><span>VAUGHANATOR</span><span>Los archivos se transmiten directamente desde tu equipo.</span></footer>
+    </main>
+    <script src="./domain.js"></script>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
