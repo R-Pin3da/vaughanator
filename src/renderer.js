@@ -1,6 +1,6 @@
 (() => {
   const domain = window.vaughanatorDomain;
-  const api = window.vaughanator;
+  const api = window.vaughanatorWeb;
   const state = {
     sessionActive: false,
     files: [],
@@ -327,7 +327,7 @@
 
     if (state.batchRunning) {
       elements.resultSummary.className = 'result-summary';
-      elements.resultSummary.textContent = 'Lote en curso. No cierres la aplicación.';
+      elements.resultSummary.textContent = 'Lote en curso. No cierres esta pestaña.';
     } else if (state.files.length === 0) {
       elements.resultSummary.className = 'result-summary';
       elements.resultSummary.textContent = 'No hay audios seleccionados.';
